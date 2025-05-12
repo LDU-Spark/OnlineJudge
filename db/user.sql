@@ -12,6 +12,7 @@ create table "user"
     password    varchar(255)                       not null,
     solved      integer default 0                  not null,
     submitted   integer default 0                  not null,
+    admin       boolean default false              not null,
     locked      boolean default false              not null,
     sex         varchar(255),
     nickname    varchar(255),
@@ -28,4 +29,5 @@ create table "user"
 alter table "user"
     owner to postgres;
 
-
+insert into "user" (username, password, admin)
+values ('zrzring', 'f7f29b21dbc871560b63eb5dff8f58f4', true)

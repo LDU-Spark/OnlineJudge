@@ -4,19 +4,14 @@ import (
 	"context"
 	"time"
 
-	"github.com/gogf/gf/v2/errors/gcode"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/net/ghttp"
-	"github.com/gogf/gf/v2/os/gctx"
 	"github.com/golang-jwt/jwt/v5"
 )
 
-// Secret Key
+// JwtSecretKey 鉴权密钥
 const (
-	CtxUsername  gctx.StrKey = "username"
-	JwtSecretKey string      = "b47qV7nDxtQpmURfBpx7"
-	Issuer       string      = "spoj"
-	Subject      string      = "username"
+	JwtSecretKey string = "b47qV7nDxtQpmURfBpx7"
 )
 
 // JWTClaims 原始的 JWT 载荷
@@ -32,8 +27,8 @@ func GenToken(context context.Context, username string) (token string, err error
 		Username: username,
 		RegisteredClaims: jwt.RegisteredClaims{
 			// Audience:  []string{"user"},                                   // 受众
-			Issuer:    Issuer,                                             // 签发人
-			Subject:   Subject,                                            // 主题
+			Issuer:    "spoj",                                             // 签发人
+			Subject:   "username",                                         // 主题
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)), // 有效时间
 			NotBefore: jwt.NewNumericDate(time.Now()),                     // 生效时间
 			IssuedAt:  jwt.NewNumericDate(time.Now()),                     // 签发时间
@@ -45,7 +40,7 @@ func GenToken(context context.Context, username string) (token string, err error
 	JWT := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	token, err = JWT.SignedString([]byte(JwtSecretKey))
 	if err != nil {
-		err = gerror.NewCode(gcode.CodeInternalError, "Failed to generated token")
+		err = gerror.New("生成 token 失败")
 		return
 	}
 
@@ -57,7 +52,7 @@ func JWTAuth(r *ghttp.Request) {
 	// 从 Header 的 Authorization 字段获取 Token
 	tokenString := r.Header.Get("Authorization")
 	if tokenString == "" {
-		r.SetError(gerror.NewCode(gcode.CodeNotAuthorized, "No token provided"))
+		r.SetError(gerror.New("未提供 token"))
 		return
 	}
 
@@ -72,11 +67,11 @@ func JWTAuth(r *ghttp.Request) {
 		return []byte(JwtSecretKey), nil
 	})
 	if err != nil || !token.Valid {
-		r.SetError(gerror.NewCode(gcode.CodeNotAuthorized, "Invalid token"))
+		r.SetError(gerror.New("不合法的 token"))
 		return
 	}
 
 	// 在 Context 里存储用户名
-	r.SetCtxVar(CtxUsername, claims.Username)
+	r.SetCtxVar("username", claims.Username)
 	r.Middleware.Next()
 }
