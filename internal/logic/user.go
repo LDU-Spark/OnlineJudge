@@ -19,7 +19,7 @@ func New() *User {
 
 // Login 登录
 func (u *User) Login(ctx context.Context, username, password string) (err error) {
-	md := dao.User.Ctx(ctx)
+	md := dao.UserBase.Ctx(ctx)
 
 	// 检查用户是否存在
 	cnt, err := md.Where("username", username).Count()
@@ -32,7 +32,7 @@ func (u *User) Login(ctx context.Context, username, password string) (err error)
 	}
 
 	// 检查密码是否正确
-	user := &entity.User{}
+	user := &entity.UserBase{}
 	err = md.Where("username", username).Scan(&user)
 	if err != nil {
 		return
@@ -52,7 +52,7 @@ func (u *User) Login(ctx context.Context, username, password string) (err error)
 
 // Register 注册
 func (u *User) Register(ctx context.Context, username, password string) (err error) {
-	md := dao.User.Ctx(ctx)
+	md := dao.UserBase.Ctx(ctx)
 
 	// 检查用户是否存在
 	cnt, err := md.Where("username", username).Count()
@@ -70,9 +70,10 @@ func (u *User) Register(ctx context.Context, username, password string) (err err
 	if err != nil {
 		return
 	}
-	res, err := md.Data(do.User{
+	res, err := md.Data(do.UserBase{
 		Username: username,
 		Password: md5Password,
+		Nickname: username,
 	}).Insert()
 	if err != nil {
 		return
@@ -83,11 +84,11 @@ func (u *User) Register(ctx context.Context, username, password string) (err err
 }
 
 // GetUserInfo 获取用户全部信息
-func (u *User) GetUserInfo(ctx context.Context, username string) (userInfo *entity.User, err error) {
-	md := dao.User.Ctx(ctx)
+func (u *User) GetUserInfo(ctx context.Context, username string) (userInfo *entity.UserBase, err error) {
+	md := dao.UserBase.Ctx(ctx)
 
 	// 获取用户信息
-	userInfo = &entity.User{}
+	userInfo = &entity.UserBase{}
 	err = md.Where("username", username).Scan(&userInfo)
 	if err != nil {
 		return

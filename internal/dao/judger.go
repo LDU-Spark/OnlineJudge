@@ -8,15 +8,15 @@ import (
 	"spoj/internal/dao/internal"
 )
 
-// userDao is the data access object for the table user.
+// judgerDao is the data access object for the table judger.
 // You can define custom methods on it to extend its functionality as needed.
-type userDao struct {
-	*internal.UserDao
+type judgerDao struct {
+	*internal.JudgerDao
 }
 
 var (
-	// User is a globally accessible object for table user operations.
-	User = userDao{internal.NewUserDao()}
+	// Judger is a globally accessible object for table judger operations.
+	Judger = judgerDao{internal.NewJudgerDao()}
 )
 
 // Add your custom methods and functionality below.

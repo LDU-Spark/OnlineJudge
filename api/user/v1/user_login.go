@@ -6,8 +6,8 @@ import (
 
 type LoginReq struct {
 	g.Meta   `path:"/login" method:"post"`
-	Username string `v:"required|length:3,12" json:"username"`
-	Password string `v:"required|length:6,16" json:"password"`
+	Username string `v:"required|length:3,16" json:"username"`
+	Password string `v:"required|length:3,16" json:"password"`
 }
 
 type LoginRes struct {

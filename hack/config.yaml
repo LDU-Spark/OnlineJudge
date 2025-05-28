@@ -5,5 +5,5 @@ gfcli:
   gen:
     dao:
       link: "pgsql:postgres:123456@tcp(127.0.0.1:5432)/spoj"
-      tables: "user"
+      tables: "user_base, user_role, contest, problem, submission, judger"
       jsonCase: "Snake"

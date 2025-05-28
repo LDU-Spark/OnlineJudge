@@ -2,9 +2,8 @@ package user
 
 import (
 	"context"
-	"spoj/internal/consts"
-
 	"spoj/api/user/v1"
+	"spoj/internal/consts"
 
 	"github.com/gogf/gf/v2/frame/g"
 )
@@ -32,7 +31,14 @@ func (c *ControllerV1) Profile(ctx context.Context, req *v1.ProfileReq) (res *v1
 		g.Log().Error(ctx, err)
 		return
 	}
-	res = user
+
+	// 绑定返回
+	res = &v1.ProfileRes{
+		Nickname: user.Nickname,
+		Profile:  user.Profile,
+	}
+
+	//g.Log().Debug(ctx, "user info:", user)
 
 	return
 }
